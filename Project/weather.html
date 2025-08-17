@@ -45,8 +45,9 @@
       padding: 20px 22px;
       border-bottom: 1px solid rgba(255,255,255,0.08);
       display: flex;
-      align-items: center;
-      gap: 12px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
     }
 
     header h1 {
@@ -54,6 +55,11 @@
       font-weight: 650;
       margin: 0;
       letter-spacing: 0.3px;
+    }
+
+    header small {
+      font-size: 14px;
+      color: var(--muted);
     }
 
     .search {
@@ -202,6 +208,7 @@
           <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.5"/>
         </svg>
         <h1>Weather — Today</h1>
+        <small>Owner: Dinesh Yadav</small>
       </header>
 
       <div class="search" role="search">
@@ -255,14 +262,14 @@
       </div>
 
       <footer>
-        Powered by WeatherAPI.com — This demo uses client-side fetch.
+        Powered by WeatherAPI.com — This demo uses client-side fetch.<br>
+        Owner: <strong>Dinesh Yadav</strong>
       </footer>
     </div>
   </div>
 
   <script>
-    // 👉 Replace with your API key if needed. You shared one in chat — using it here:
-    const API_KEY = "470886d23706429f8e045506251708"; // ⚠️ Public in client-side code
+    const API_KEY = "470886d23706429f8e045506251708";
 
     const els = {
       query: document.getElementById('query'),
@@ -280,8 +287,8 @@
       unitF: document.getElementById('unitF')
     };
 
-    let lastData = null; // store latest API payload
-    let showC = true;    // default unit is Celsius
+    let lastData = null;
+    let showC = true;
 
     function setStatus(msg, isError = false) {
       els.status.textContent = msg;
@@ -303,7 +310,6 @@
       els.loc.textContent = `${location.region || ''} ${location.tz_id ? '• ' + location.tz_id : ''}`.trim();
       els.cond.textContent = current.condition?.text || '—';
 
-      // Icon
       els.condIcon.innerHTML = '';
       if (current.condition?.icon) {
         const img = new Image();
@@ -314,7 +320,6 @@
         els.condIcon.appendChild(img);
       }
 
-      // Numbers
       const c = Math.round(current.temp_c);
       const f = Math.round(current.temp_f);
       const fc = Math.round(current.feelslike_c);
@@ -347,7 +352,6 @@
       }
     }
 
-    // Events
     els.go.addEventListener('click', () => {
       const q = els.query.value.trim();
       if (!q) { setStatus('Please type a location first.', true); return; }
@@ -369,9 +373,6 @@
 
     els.unitC.addEventListener('click', () => setUnit(true));
     els.unitF.addEventListener('click', () => setUnit(false));
-
-    // Optional: prefill with a sample so users see something quickly
-    // fetchWeather('London');
   </script>
 </body>
 </html>
