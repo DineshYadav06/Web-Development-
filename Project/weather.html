@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weather — Simple Location Search</title>
+  <style>
+    :root {
+      --bg: #0f1220;
+      --card: #161a2b;
+      --muted: #9aa3b2;
+      --text: #e7ecf3;
+      --accent: #7aa2ff;
+      --danger: #ff6b6b;
+      --ring: rgba(122,162,255,0.4);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 20% -10%, #1a1f35 0%, var(--bg) 55%),
+                  radial-gradient(1000px 500px at 120% 120%, #222845 0%, var(--bg) 60%);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 720px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+      overflow: hidden;
+    }
+
+    header {
+      padding: 20px 22px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    header h1 {
+      font-size: 18px;
+      font-weight: 650;
+      margin: 0;
+      letter-spacing: 0.3px;
+    }
+
+    .search {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      padding: 18px;
+      background: rgba(0,0,0,0.12);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .input {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #0f1428;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 10px 12px;
+      outline: none;
+      transition: box-shadow .2s, border-color .2s;
+    }
+
+    .input:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 6px var(--ring);
+    }
+
+    .input input {
+      flex: 1;
+      background: transparent;
+      border: 0;
+      color: var(--text);
+      font-size: 16px;
+      outline: none;
+    }
+
+    .btn {
+      appearance: none;
+      border: 0;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--accent);
+      color: #0b1022;
+      transition: transform .06s ease, filter .2s ease, box-shadow .2s ease;
+      box-shadow: 0 6px 16px rgba(122,162,255,0.35);
+    }
+    .btn:hover { filter: brightness(1.05); }
+    .btn:active { transform: translateY(1px); }
+
+    .content { padding: 18px; }
+
+    .results {
+      display: grid;
+      gap: 14px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .place {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .place small { color: var(--muted); font-weight: 500; }
+
+    .temp {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .temp .big { font-size: 48px; font-weight: 700; line-height: 1; }
+    .temp .unit-toggle {
+      display: inline-flex;
+      gap: 8px;
+      background: #0f1428;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 999px;
+      padding: 4px;
+    }
+    .seg {
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      user-select: none;
+    }
+    .seg.active { background: var(--accent); color: #0b1022; }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .pill {
+      background: #0f1428;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 12px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .pill .label { color: var(--muted); font-size: 12px; }
+    .pill .value { font-size: 16px; font-weight: 650; }
+
+    .status { margin-top: 6px; font-size: 14px; color: var(--muted); }
+    .error { color: var(--danger); }
+
+    footer { padding: 14px 18px; border-top: 1px solid rgba(255,255,255,0.08); color: var(--muted); font-size: 12px; text-align: center; }
+
+    .icon {
+      width: 56px; height: 56px; border-radius: 12px; display: grid; place-items: center;
+      background: radial-gradient(60px 40px at 50% 0%, rgba(255,255,255,0.1), rgba(255,255,255,0));
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    @media (max-width: 520px) {
+      .meta { grid-template-columns: 1fr; }
+      .row { grid-template-columns: 1fr; gap: 16px; }
+      .temp { justify-content: space-between; }
+      .temp .big { font-size: 40px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="card">
+      <header>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+          <path d="M6 14a6 6 0 1112 0c0 6-6 8-6 8s-6-2-6-8z" stroke="currentColor" stroke-width="1.5"/>
+          <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        <h1>Weather — Today</h1>
+      </header>
+
+      <div class="search" role="search">
+        <label class="input" aria-label="Enter a city, postcode, or coordinates">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+            <path d="M11 19a8 8 0 100-16 8 8 0 000 16z" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M21 21l-3.5-3.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <input id="query" placeholder="Type a location (e.g., London, 221403, 28.61,77.20)" autocomplete="off" />
+        </label>
+        <button id="go" class="btn">Get Weather</button>
+      </div>
+
+      <div class="content">
+        <div id="status" class="status">Enter a location to see today’s temperature.</div>
+
+        <div id="results" class="results" hidden>
+          <div class="row">
+            <div class="place" id="place">
+              <div class="icon" id="condIcon" aria-hidden></div>
+              <div>
+                <div id="city">—</div>
+                <small id="loc">—</small>
+              </div>
+            </div>
+
+            <div class="temp">
+              <div class="big" id="temp">—</div>
+              <div class="unit-toggle" role="tablist" aria-label="Temperature units">
+                <div class="seg active" id="unitC" role="tab" aria-selected="true">°C</div>
+                <div class="seg" id="unitF" role="tab" aria-selected="false">°F</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="meta">
+            <div class="pill">
+              <div class="label">Condition</div>
+              <div class="value" id="cond">—</div>
+            </div>
+            <div class="pill">
+              <div class="label">Feels like</div>
+              <div class="value" id="feels">—</div>
+            </div>
+            <div class="pill">
+              <div class="label">Humidity</div>
+              <div class="value" id="humid">—</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        Powered by WeatherAPI.com — This demo uses client-side fetch.
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // 👉 Replace with your API key if needed. You shared one in chat — using it here:
+    const API_KEY = "470886d23706429f8e045506251708"; // ⚠️ Public in client-side code
+
+    const els = {
+      query: document.getElementById('query'),
+      go: document.getElementById('go'),
+      status: document.getElementById('status'),
+      results: document.getElementById('results'),
+      temp: document.getElementById('temp'),
+      city: document.getElementById('city'),
+      loc: document.getElementById('loc'),
+      cond: document.getElementById('cond'),
+      condIcon: document.getElementById('condIcon'),
+      feels: document.getElementById('feels'),
+      humid: document.getElementById('humid'),
+      unitC: document.getElementById('unitC'),
+      unitF: document.getElementById('unitF')
+    };
+
+    let lastData = null; // store latest API payload
+    let showC = true;    // default unit is Celsius
+
+    function setStatus(msg, isError = false) {
+      els.status.textContent = msg;
+      els.status.classList.toggle('error', isError);
+    }
+
+    function setLoading(isLoading) {
+      if (isLoading) {
+        setStatus('Fetching weather…');
+        els.results.hidden = true;
+      }
+    }
+
+    function updateUI(data) {
+      lastData = data;
+      const { location, current } = data;
+
+      els.city.textContent = `${location.name}, ${location.country}`;
+      els.loc.textContent = `${location.region || ''} ${location.tz_id ? '• ' + location.tz_id : ''}`.trim();
+      els.cond.textContent = current.condition?.text || '—';
+
+      // Icon
+      els.condIcon.innerHTML = '';
+      if (current.condition?.icon) {
+        const img = new Image();
+        img.src = 'https:' + current.condition.icon;
+        img.alt = current.condition?.text || 'Weather icon';
+        img.width = 44; img.height = 44;
+        img.decoding = 'async';
+        els.condIcon.appendChild(img);
+      }
+
+      // Numbers
+      const c = Math.round(current.temp_c);
+      const f = Math.round(current.temp_f);
+      const fc = Math.round(current.feelslike_c);
+      const ff = Math.round(current.feelslike_f);
+      const hum = current.humidity;
+
+      els.temp.textContent = showC ? `${c}°C` : `${f}°F`;
+      els.feels.textContent = showC ? `${fc}°C` : `${ff}°F`;
+      els.humid.textContent = `${hum}%`;
+
+      els.results.hidden = false;
+      setStatus(`Updated for ${location.name} — ${new Date(current.last_updated_epoch * 1000).toLocaleString()}`);
+    }
+
+    async function fetchWeather(q) {
+      const url = `https://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${encodeURIComponent(q)}&aqi=yes`;
+      setLoading(true);
+      try {
+        const res = await fetch(url, { headers: { 'Accept': 'application/json' } });
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(`Request failed (${res.status}). ${text}`);
+        }
+        const data = await res.json();
+        if (!data || !data.location || !data.current) throw new Error('Unexpected API response.');
+        updateUI(data);
+      } catch (err) {
+        console.error(err);
+        setStatus(err.message.includes('key') ? 'API error: check your API key or quota.' : 'Could not find that place. Try a different query.', true);
+      }
+    }
+
+    // Events
+    els.go.addEventListener('click', () => {
+      const q = els.query.value.trim();
+      if (!q) { setStatus('Please type a location first.', true); return; }
+      fetchWeather(q);
+    });
+
+    els.query.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        els.go.click();
+      }
+    });
+
+    function setUnit(isCelsius) {
+      showC = isCelsius;
+      els.unitC.classList.toggle('active', isCelsius);
+      els.unitF.classList.toggle('active', !isCelsius);
+      if (lastData) updateUI(lastData);
+    }
+
+    els.unitC.addEventListener('click', () => setUnit(true));
+    els.unitF.addEventListener('click', () => setUnit(false));
+
+    // Optional: prefill with a sample so users see something quickly
+    // fetchWeather('London');
+  </script>
+</body>
+</html>
