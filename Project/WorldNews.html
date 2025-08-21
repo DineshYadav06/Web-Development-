@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🌍 World News (GNews API)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {margin:0;font-family:Arial,sans-serif;background:#f8fafc;color:#111;}
+    header {position:sticky;top:0;background:white;border-bottom:1px solid #ddd;padding:1rem;z-index:10;}
+    header h1 {margin:0 0 0.5rem;}
+    header input,header select,header button {
+      padding:0.5rem;border:1px solid #ccc;border-radius:6px;margin-right:0.5rem;
+    }
+    main {max-width:1200px;margin:auto;padding:1rem;
+      display:grid;gap:1rem;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));}
+    .card {background:white;border-radius:10px;overflow:hidden;
+      box-shadow:0 2px 6px rgba(0,0,0,0.1);display:flex;flex-direction:column;transition:.2s;}
+    .card:hover{transform:scale(1.02);}
+    .card img{width:100%;height:160px;object-fit:cover;background:#eee;}
+    .card .content{padding:1rem;flex:1;}
+    .card h3{margin:0 0 .5rem;font-size:1.1rem;}
+    .card p{font-size:.9rem;color:#555;}
+    .card a{display:inline-block;margin-top:.8rem;color:#2563eb;text-decoration:none;font-weight:bold;}
+    .error{max-width:800px;margin:2rem auto;background:#fee2e2;color:#b91c1c;padding:1rem;border-radius:6px;}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌍 World News</h1>
+    <div>
+      <input id="searchInput" type="text" placeholder="Search news (e.g., cricket, AI)">
+      <select id="langSelect">
+        <option value="en">English</option>
+        <option value="hi">Hindi</option>
+        <option value="fr">French</option>
+        <option value="de">German</option>
+      </select>
+      <button onclick="loadNews()">Find News</button>
+    </div>
+  </header>
+
+  <div id="errorBox" class="error" style="display:none;"></div>
+  <main id="newsContainer"></main>
+
+  <script>
+    const API_KEY = "demo"; // GNews demo key (replace with your own free key for more)
+    const BASE_URL = "https://gnews.io/api/v4";
+
+    async function loadNews() {
+      const q = document.getElementById("searchInput").value.trim() || "world";
+      const lang = document.getElementById("langSelect").value;
+      const url = `${BASE_URL}/search?q=${encodeURIComponent(q)}&lang=${lang}&max=20&apikey=${API_KEY}`;
+
+      try {
+        document.getElementById("errorBox").style.display = "none";
+        document.getElementById("newsContainer").innerHTML = "Loading...";
+
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!data.articles) throw new Error("No articles received");
+
+        renderNews(data.articles);
+      } catch (err) {
+        document.getElementById("newsContainer").innerHTML = "";
+        document.getElementById("errorBox").innerText = "Error: " + err.message;
+        document.getElementById("errorBox").style.display = "block";
+      }
+    }
+
+    function renderNews(articles) {
+      const container = document.getElementById("newsContainer");
+      if (!articles.length) {
+        container.innerHTML = "<p>No articles found.</p>";
+        return;
+      }
+      container.innerHTML = "";
+      articles.forEach(a => {
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <img src="${a.image || "https://placehold.co/600x400?text=No+Image"}" alt="">
+          <div class="content">
+            <h3>${a.title}</h3>
+            <p>${a.description || ""}</p>
+            <a href="${a.url}" target="_blank">Read More →</a>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Load default news on page start
+    loadNews();
+  </script>
+</body>
+</html>

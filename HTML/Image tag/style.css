@@ -1,0 +1,10 @@
+Body{
+  background-color: antiquewhite;
+  
+}
+td{
+  border: 2px solid black;
+}
+th{
+  border: 2px solid rgb(192, 18, 18);
+}
