@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Selectors</title>
+  <style>
+/* Element Selector */
+div{
+  /* background-color: red;
+  color: yellow; */
+
+
+}
+    /* Class Selector */
+.red{
+  background-color: red;
+}
+
+/* Id Selector  */
+#green{
+  background-color: aqua;
+  color: rgb(153, 0, 255);
+}
+  /* Child Selectors */
+  div >p{
+    color: yellow;
+    background-color: rgb(76, 0, 255);
+  }
+
+  /* Desecendant Selector*/
+  div p{
+    color:black;
+    background-color: aqua;
+  }
+
+  /* Universal Selector */
+  *{
+    margin: 0;
+    padding: 0;
+  }
+  /* Pseudo Selector */
+  a.visited{
+    color: yellow;
+  }
+  a.link {
+    color: green;
+  }
+  
+  a.active{
+    background-color: red;
+  }
+
+  a.hover{
+    background-color: rgb(166, 255, 0);
+  }
+
+  p.first-child{
+    background-color: aqua;
+  }
+
+
+  </style>
+</head>
+<body>
+  <main class="one">
+    <p>I am first</p>
+    <p>I am Second</p>
+  </main>
+  
+  <div class="red" >
+     Hello My World  
+     <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eum quis, minus quo quae doloremque aliquam ipsum aperiam rerum dolorum deserunt ea repudiandae. Nam corrupti odit vitae perspiciatis suscipit ducimus quae tempore aperiam unde eligendi, id quas rerum sed impedit. Libero fugiat in dolores aut et? Ut dicta quasi vero nostrum at. Eum qui officia illum vero. Nobis assumenda amet quos non incidunt hic fugit similique accusamus tenetur. Possimus perferendis omnis ipsam eum magnam neque impedit soluta numquam mollitia repellendus! Tenetur corrupti repudiandae, voluptates placeat molestias laboriosam nam facilis culpa nihil?</p>
+     </div>
+     <div id="green">
+
+      Code With Dinesh
+
+
+     </div>
+
+
+     <a href="https://www.google.com" >GO To Google </a>
+     <a href="https://www.facebook.com" >GO To Facebook2</a>
+  
+</body>
+</html>
