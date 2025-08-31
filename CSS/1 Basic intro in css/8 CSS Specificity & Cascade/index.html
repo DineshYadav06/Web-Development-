@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CSS Specifici</title>
+  <style>
+    /* The specificity of this selector is 1*/
+    h1 {
+      color: aqua;
+
+
+    }
+
+    /* The sepecificity of this selector is 10*/
+    .yellow {
+      color: yellow;
+    }
+
+    /* The sepecificity of this selector is 10*/
+    .cred {
+      color: red;
+    }
+
+    /* The sepecificity of this selector is 10*/
+    .cpurple {
+      color: purple;
+    }
+
+    /* This is an Example of atribute selctore. The  specificity of this selector is 10*/
+
+    [data-x=a] {
+      color: maroon;
+    }
+/* The specificty of this selector is 1 + 10 + 10 +10 +10 = 41 */
+    a.dineshclass.aman-class[href]:hover {
+      color: rgb(255, 0, 157);
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <h1 class="yellow cred cpurple" data-x="a"> CSS Specificity</h1>
+  </div>
+
+</body>
+
+</html>
