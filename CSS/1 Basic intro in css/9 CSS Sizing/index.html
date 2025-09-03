@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Css Sizing </title>
+  <style>
+    .box {
+      box-sizing: border-box;
+      border: 2px solid black;
+      /* width: 2028px; */
+      width: 80vw;
+      /* View Width*/
+      height: 10vh;
+      margin: 23px auto;
+      background-color: aqua;
+      color: red;
+    }
+
+    .container {
+      box-sizing: border-box;
+      border: 2px solid black;
+      /* width: 2028px; */
+      width: 80vw;
+      /* View Width*/
+      /* height: 80vh; */
+      min-width: 80vh;
+      margin: 23px auto;
+      background-color: aqua;
+      color: red;
+      font-size: 18px;
+      background-color: aquamarine;
+    }
+  .container div{
+    font-size: 1.2em;
+  }
+  .container div span{
+    border: 2px solid blue;
+    width: 50;
+  }
+  .mycont{
+    box-sizing: border-box;
+    margin-right: 23px auto;
+    background-color: red;
+    color:yellow;
+    font-size: 22px;
+    width: 100vmin;
+
+
+}
+
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="box">This is Box</div>
+  <div class="container">
+     <div>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nihil nostrum consectetur sed
+    eveniet enim quas nulla perspiciatis. Odio quaerat aliquam, ipsa sint asperiores architecto laudantium doloribus
+    natus atque numquam omnis itaque ullam dolore culpa! Maiores aliquid blanditiis dolorum, commodi totam earum harum,
+    vero quo quia deserunt molestiae numquam suscipit neque! Enim corrupti ducimus neque obcaecati quis! Esse
+    accusantium eligendi dolores debitis et provident enim, earum eum! Quas natus veniam eaque?
+  <span>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Eius dolor at cumque, esse rerum, mollitia maxime rem sequi vel nobis ducimus sunt tenetur, porro officia officiis consequuntur quisquam. Fuga, harum?</span>
+  
+     </div>
+
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate et culpa sapiente eos perferendis nihil quos adipisci temporibus. Tempora quos, voluptatem mollitia laboriosam reprehenderit saepe rerum praesentium! Quo sunt facere similique dolorum neque omnis aliquid earum! Obcaecati commodi suscipit deleniti, delectus impedit, beatae sequi totam facilis exercitationem dolor saepe iste id sit eaque placeat consectetur temporibus quidem animi perspiciatis est culpa assumenda, repellat officiis? Quod recusandae, aliquid, unde iure saepe quos rerum voluptas corrupti itaque voluptate temporibus, quas praesentium! Impedit explicabo delectus rerum eius labore consectetur veritatis blanditiis, iste natus maiores vero dolorum dolore at, quas, consequatur ab non fuga.
+  </div>
+  <div class="mycont">
+    I am another container
+  </div>
+
+</body>
+
+</html>
